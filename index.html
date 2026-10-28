@@ -7,9 +7,7 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1f1f1f">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
   <style>
-    /* Prevent text selection and mobile viewport bouncing */
     * {
       user-select: none;
       -webkit-user-select: none;
@@ -22,19 +20,14 @@
       background-color: #050811;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
-    
-    /* Neon Glow & Custom Glassmorphic Shadows */
     .glow-red { box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
     .glow-green { box-shadow: 0 0 15px rgba(34, 197, 94, 0.4); }
     .glow-cyan { box-shadow: 0 0 15px rgba(6, 182, 212, 0.4); }
-    
     .hud-card {
       background: rgba(15, 23, 42, 0.75);
       backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
-    /* Virtual Joystick Canvas Touch behavior */
     .joystick-container {
       touch-action: none;
     }
@@ -44,10 +37,9 @@
 
   <!-- TOP HUD BAR: CONNECTION & KEY METRICS -->
   <header class="hud-card z-20 px-4 py-2 border-b border-slate-800 flex items-center justify-between gap-2 shrink-0">
-    <!-- Left: Status & Connect -->
     <div class="flex items-center gap-3">
       <button id="connectBtn" onclick="toggleConnect()" class="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 active:scale-95 transition text-xs font-bold uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-cyan-950">
-        <i data-lucide="bluetooth" class="w-4 h-4"></i>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 17l6-5-6-5m12 10l-6-5 6-5"></path></svg>
         <span id="connectBtnText">Connect BLE</span>
       </button>
 
@@ -59,28 +51,24 @@
 
     <!-- Center: Main Telemetry Summary Pill -->
     <div class="flex items-center gap-2 sm:gap-4 font-mono text-xs bg-slate-950/80 px-3 py-1.5 rounded-full border border-slate-800">
-      <!-- Battery -->
-      <div class="flex items-center gap-1.5" title="Battery Voltage">
-        <i data-lucide="battery-charging" class="w-4 h-4 text-emerald-400"></i>
+      <div class="flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
         <span id="hudVbat" class="font-bold text-emerald-400">0.00V</span>
       </div>
       <div class="h-3 w-px bg-slate-800"></div>
-      <!-- PWM -->
-      <div class="flex items-center gap-1.5" title="Motor PWM">
-        <i data-lucide="gauge" class="w-4 h-4 text-cyan-400"></i>
+      <div class="flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <span>PWM: <strong id="hudPwm" class="text-cyan-400">0</strong></span>
       </div>
       <div class="h-3 w-px bg-slate-800"></div>
-      <!-- Arm Status -->
       <div id="hudArmBadge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-400 uppercase tracking-wide">
         DISARMED
       </div>
     </div>
 
-    <!-- Right: Quick Actions & Log Drawer Toggle -->
     <div class="flex items-center gap-2">
       <button onclick="toggleLogModal()" class="p-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 transition" title="Raw Logs">
-        <i data-lucide="terminal" class="w-4 h-4"></i>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 17l6-6-6-6m8 14h8"></path></svg>
       </button>
     </div>
   </header>
@@ -88,35 +76,28 @@
   <!-- MAIN VIEWPORT: SPLIT CONTROL DECKS & HUD METRICS -->
   <main class="flex-1 relative flex flex-col md:flex-row overflow-hidden p-2 sm:p-4 gap-2 sm:gap-4">
     
-    <!-- LEFT CONTROL DECK: THROTTLE / YAW JOYSTICK & EMERGENCY CONTROLS -->
+    <!-- LEFT CONTROL DECK: THROTTLE / YAW JOYSTICK -->
     <section class="flex-1 hud-card rounded-2xl p-3 flex flex-col relative overflow-hidden">
       <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
-        <div class="flex items-center gap-2">
-          <i data-lucide="sliders-vertical" class="w-4 h-4 text-cyan-400"></i>
-          <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Throttle / Yaw</span>
+        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-300">
+          Throttle / Yaw
         </div>
-        
-        <!-- Throttle Mode Lock -->
         <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-400">
           <input type="checkbox" id="throttleHoldToggle" checked onchange="toggleThrottleHold(this.checked)" class="rounded bg-slate-800 border-slate-700 text-cyan-500 focus:ring-0">
           <span>Hold Throttle Position</span>
         </label>
       </div>
 
-      <!-- Emergency STOP Button -->
       <div class="mb-2">
         <button onclick="sendCmd('STOP')" class="w-full py-3 rounded-xl bg-red-600 hover:bg-red-500 active:scale-95 transition font-black tracking-widest text-white uppercase text-sm flex items-center justify-center gap-2 glow-red border border-red-400/30">
-          <i data-lucide="octagon-alert" class="w-5 h-5"></i>
           EMERGENCY STOP
         </button>
       </div>
 
-      <!-- Left Virtual Joystick Canvas Container -->
       <div class="flex-1 relative flex items-center justify-center joystick-container" id="leftJoystickBox">
         <canvas id="leftJoystickCanvas" class="w-full h-full block"></canvas>
       </div>
 
-      <!-- Live Readouts for Left Stick -->
       <div class="grid grid-cols-2 gap-2 mt-2 font-mono text-center text-xs">
         <div class="bg-slate-900/60 p-1.5 rounded border border-slate-800">
           <span class="text-slate-500 block text-[10px]">YAW</span>
@@ -131,39 +112,30 @@
 
     <!-- CENTER TELEMETRY & FLIGHT SAFETY HUD OVERLAY -->
     <section class="w-full md:w-80 flex flex-col gap-2 shrink-0 justify-between">
-      
-      <!-- Armed Safety Switch & Override -->
       <div class="hud-card rounded-2xl p-3 flex flex-col gap-2">
         <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block border-b border-slate-800 pb-1">Master Arming Lock</span>
         
         <div class="grid grid-cols-2 gap-2">
           <button id="armBtn" onclick="sendCmd('ARM')" class="py-2.5 px-3 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/40 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition active:scale-95">
-            <i data-lucide="shield-check" class="w-4 h-4"></i>
             ARM
           </button>
           <button onclick="sendCmd('DISARM')" class="py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition active:scale-95">
-            <i data-lucide="shield-alert" class="w-4 h-4"></i>
             DISARM
           </button>
         </div>
 
         <button onclick="sendCmd('OVERRIDE,1')" class="w-full py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[11px] font-semibold flex items-center justify-center gap-1.5 transition">
-          <i data-lucide="zap-off" class="w-3.5 h-3.5"></i>
           Override Battery Protection
         </button>
       </div>
 
-      <!-- Live Flight Attitude Horizon (Roll/Pitch Visualizer) -->
       <div class="hud-card rounded-2xl p-3 flex flex-col items-center justify-center relative overflow-hidden h-36">
         <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 absolute top-2 left-3">Attitude Fusion</span>
         
-        <!-- Synthetic Artificial Horizon Dial -->
         <div class="w-24 h-24 rounded-full border-2 border-slate-700 relative overflow-hidden flex items-center justify-center bg-slate-950">
-          <!-- Horizon Pitch/Roll Bar -->
           <div id="horizonBar" class="w-32 h-32 bg-gradient-to-b from-cyan-900/60 via-cyan-500 to-amber-900/60 absolute transition-transform duration-75 flex items-center justify-center" style="transform: translateY(0px) rotate(0deg);">
             <div class="w-full h-0.5 bg-cyan-300 shadow-[0_0_8px_#06b6d4]"></div>
           </div>
-          <!-- Crosshair -->
           <div class="w-4 h-4 border-2 border-emerald-400 rounded-full z-10 relative"></div>
         </div>
 
@@ -173,42 +145,31 @@
         </div>
       </div>
 
-      <!-- Distance Sensor & Obstacle Warning -->
       <div class="hud-card rounded-2xl p-3 flex flex-col gap-2">
         <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block border-b border-slate-800 pb-1">ToF Rangefinder</span>
         
         <div class="flex items-center justify-between font-mono">
-          <div class="flex items-center gap-2">
-            <i data-lucide="radar" class="w-4 h-4 text-cyan-400"></i>
-            <span class="text-xs text-slate-300">Distance</span>
-          </div>
+          <span class="text-xs text-slate-300">Distance</span>
           <span id="hudTof" class="text-sm font-bold text-cyan-400">8190 mm</span>
         </div>
 
-        <!-- Warning Alert Banner -->
         <div id="hudObstacleBanner" class="py-1.5 px-3 rounded-lg bg-slate-900 border border-slate-800 text-center text-xs font-bold text-slate-500 transition">
           OBSTACLE CLEAR
         </div>
       </div>
-
     </section>
 
     <!-- RIGHT CONTROL DECK: PITCH / ROLL JOYSTICK -->
     <section class="flex-1 hud-card rounded-2xl p-3 flex flex-col relative overflow-hidden">
       <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
-        <div class="flex items-center gap-2">
-          <i data-lucide="move" class="w-4 h-4 text-cyan-400"></i>
-          <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Pitch / Roll Stick</span>
-        </div>
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-300">Pitch / Roll Stick</span>
         <span class="text-[10px] text-slate-500">Spring Auto-Center</span>
       </div>
 
-      <!-- Right Virtual Joystick Canvas Container -->
       <div class="flex-1 relative flex items-center justify-center joystick-container" id="rightJoystickBox">
         <canvas id="rightJoystickCanvas" class="w-full h-full block"></canvas>
       </div>
 
-      <!-- Live Readouts for Right Stick -->
       <div class="grid grid-cols-2 gap-2 mt-2 font-mono text-center text-xs">
         <div class="bg-slate-900/60 p-1.5 rounded border border-slate-800">
           <span class="text-slate-500 block text-[10px]">ROLL</span>
@@ -220,20 +181,14 @@
         </div>
       </div>
     </section>
-
   </main>
 
   <!-- COLLAPSIBLE RAW TELEMETRY LOG MODAL -->
   <div id="logModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md p-4 flex flex-col items-center justify-center">
     <div class="hud-card w-full max-w-2xl h-3/4 rounded-2xl p-4 flex flex-col">
       <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
-        <div class="flex items-center gap-2">
-          <i data-lucide="terminal" class="w-4 h-4 text-cyan-400"></i>
-          <span class="text-xs font-bold uppercase tracking-wider">Raw Telemetry & BLE Logs</span>
-        </div>
-        <button onclick="toggleLogModal()" class="p-1 rounded bg-slate-800 text-slate-400 hover:text-white">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
+        <span class="text-xs font-bold uppercase tracking-wider">Raw Telemetry & BLE Logs</span>
+        <button onclick="toggleLogModal()" class="p-1 rounded bg-slate-800 text-slate-400 hover:text-white font-bold px-2">✕</button>
       </div>
       
       <pre id="rawLogConsole" class="flex-1 bg-slate-950 p-3 rounded-xl border border-slate-800 font-mono text-[11px] text-emerald-400 overflow-y-auto whitespace-pre-wrap select-text"></pre>
@@ -246,21 +201,13 @@
   </div>
 
   <script>
-    // Initialize Lucide Icons
-    lucide.createIcons();
-
-    // BLE Constants
-    const SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
-    const RX_UUID      = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
-    const TX_UUID      = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
-
-    // State Variables
+    // --- STATE VARIABLES DECLARED FIRST (Fixes Hoisting & Dead Zone Errors) ---
     let bluetoothDevice = null;
     let rxCharacteristic = null;
     let txCharacteristic = null;
     let isConnected = false;
+    let throttleHold = true;
 
-    // Joystick Control State (-100 to 100, Throttle 0 to 100)
     let joyState = {
       roll: 0,
       pitch: 0,
@@ -268,7 +215,10 @@
       throttle: 0
     };
 
-    let throttleHold = true;
+    // BLE Constants
+    const SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
+    const RX_UUID      = "6e400002-b5a3-f393-e0a9-e50e24dcca9e";
+    const TX_UUID      = "6e400003-b5a3-f393-e0a9-e50e24dcca9e";
 
     // --- BLE Connection Logic ---
     async function toggleConnect() {
@@ -341,23 +291,18 @@
 
     // --- Command Dispatcher ---
     async function sendCmd(cmd) {
-      if (!rxCharacteristic || !isConnected) {
-        logToConsole("Cannot send command [Not Connected]: " + cmd);
-        return;
-      }
+      if (!rxCharacteristic || !isConnected) return;
       try {
         const encoder = new TextEncoder();
         await rxCharacteristic.writeValue(encoder.encode(cmd + "\n"));
-        logToConsole("TX -> " + cmd);
       } catch (err) {
         logToConsole("TX Error: " + err);
       }
     }
 
-    // High frequency BLE Dispatch Loop (~50Hz streaming loop)
+    // 50Hz BLE Command Stream Loop
     setInterval(() => {
       if (isConnected) {
-        // Send continuous Joystick command stream format: J,roll,pitch,yaw,throttle
         const cmd = `J,${joyState.roll},${joyState.pitch},${joyState.yaw},${joyState.throttle}`;
         sendCmd(cmd);
       }
@@ -369,13 +314,10 @@
       const rawStr = decoder.decode(event.target.value).trim();
       logToConsole("RX <- " + rawStr);
 
-      // Example string format:
-      // VBAT=3.85,PWM=45,ARMED=1,ROLL=2.1,PITCH=-0.5,TOF_MM=120,OBSTACLE=0,LAND_REQ=0,CRITICAL=0
       const params = new URLSearchParams(rawStr.replace(/,/g, '&'));
 
       if (params.has('VBAT')) {
-        const vbat = parseFloat(params.get('VBAT')).toFixed(2);
-        document.getElementById('hudVbat').innerText = vbat + "V";
+        document.getElementById('hudVbat').innerText = parseFloat(params.get('VBAT')).toFixed(2) + "V";
       }
       if (params.has('PWM')) {
         document.getElementById('hudPwm').innerText = params.get('PWM');
@@ -397,7 +339,6 @@
         document.getElementById('hudRoll').innerText = r + "°";
         document.getElementById('hudPitch').innerText = p + "°";
 
-        // Update Attitude Horizon visualizer
         const horizonBar = document.getElementById('horizonBar');
         horizonBar.style.transform = `translateY(${p * 1.2}px) rotate(${-r}deg)`;
       }
@@ -426,8 +367,6 @@
       let width = 0, height = 0, radius = 0;
       let active = false;
       let touchId = null;
-
-      // Position from center (-1 to 1)
       let posX = 0, posY = options.initialY || 0;
 
       function resize() {
@@ -444,11 +383,9 @@
 
       function draw() {
         ctx.clearRect(0, 0, width, height);
-
         const centerX = width / 2;
         const centerY = height / 2;
 
-        // Draw Base Circle
         ctx.beginPath();
         ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(15, 23, 42, 0.6)';
@@ -457,7 +394,6 @@
         ctx.fill();
         ctx.stroke();
 
-        // Draw Axis Guidelines
         ctx.beginPath();
         ctx.moveTo(centerX - radius, centerY);
         ctx.lineTo(centerX + radius, centerY);
@@ -467,11 +403,9 @@
         ctx.lineWidth = 1;
         ctx.stroke();
 
-        // Calculate Knob Position
         const knobX = centerX + posX * radius;
         const knobY = centerY + posY * radius;
 
-        // Draw Knob
         ctx.beginPath();
         ctx.arc(knobX, knobY, radius * 0.35, 0, Math.PI * 2);
         ctx.fillStyle = active ? 'rgba(6, 182, 212, 0.8)' : 'rgba(30, 41, 59, 0.9)';
@@ -506,7 +440,6 @@
             active = false;
             touchId = null;
 
-            // Reset to Center based on lock options
             if (options.autoCenterX) posX = 0;
             if (options.autoCenterY) posY = 0;
 
@@ -524,7 +457,6 @@
 
         let dx = touch.clientX - centerX;
         let dy = touch.clientY - centerY;
-
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         if (distance > radius) {
@@ -544,15 +476,12 @@
       canvas.addEventListener('touchend', handleTouchEnd, false);
       canvas.addEventListener('touchcancel', handleTouchEnd, false);
 
-      // Initial Draw
       draw();
     }
 
-    // Initialize Left Joystick (Yaw: Auto-center X, Throttle: Holds Y position by default)
+    // Initialize Joysticks
     setupVirtualJoystick('leftJoystickCanvas', 'leftJoystickBox', (x, y) => {
       joyState.yaw = Math.round(x * 100);
-      
-      // Map Y axis (-1 top to +1 bottom) to Throttle (0 to 100%)
       const mappedThrottle = Math.round((( -y + 1 ) / 2) * 100);
       joyState.throttle = Math.max(0, Math.min(100, mappedThrottle));
 
@@ -560,10 +489,8 @@
       document.getElementById('readoutThrottle').innerText = joyState.throttle + "%";
     }, { autoCenterX: true, autoCenterY: false, initialY: 1 });
 
-    // Initialize Right Joystick (Roll: Auto-center X, Pitch: Auto-center Y)
     setupVirtualJoystick('rightJoystickCanvas', 'rightJoystickBox', (x, y) => {
       joyState.roll = Math.round(x * 100);
-      // Invert Y so up is positive pitch forward
       joyState.pitch = Math.round(-y * 100);
 
       document.getElementById('readoutRoll').innerText = joyState.roll;
@@ -574,7 +501,6 @@
       throttleHold = enable;
     }
 
-    // --- Utility & Logging ---
     function toggleLogModal() {
       const modal = document.getElementById('logModal');
       modal.classList.toggle('hidden');
@@ -590,9 +516,7 @@
     // Register Service Worker for PWA
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then((reg) => console.log('Service Worker registered! Scope:', reg.scope))
-          .catch((err) => console.log('Service Worker registration failed:', err));
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
       });
     }
   </script>
